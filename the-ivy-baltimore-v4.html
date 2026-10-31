@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Ivy Hotel, Baltimore</title>
+<meta name="description" content="A historic Mount Vernon mansion with seventeen rooms and suites, a small luxury spa and Magdalena, A Maryland Bistro. Maryland's only hotel with two Michelin Keys.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#233f3d;      /* page */
+  --teal-d:#193232;    /* buttons, deeper bands */
+  --teal-x:#132726;    /* hero base */
+  --fog:#d8d8d8;       /* text on teal, info band */
+  --fog-2:#a9b5b1;     /* muted text */
+  --ink:#233f3d;
+  --serif:"Gloock", Georgia, serif;
+  --sans:"Space Grotesk", system-ui, sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --gut:clamp(16px,7.2vw,104px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--teal);color:var(--fog);font-family:var(--sans);font-weight:400;overflow-x:hidden}
+img,video{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--fog);color:var(--teal)}
+
+/* ---------- preloader: centered mark, hairline bar, bold percent ---------- */
+#loader{position:fixed;inset:0;z-index:100;background:var(--teal);display:flex;align-items:center;justify-content:center;transition:opacity .9s var(--ease),visibility .9s}
+#loader.done{opacity:0;visibility:hidden}
+.lmark{text-align:center;font-family:var(--serif);font-size:15px;letter-spacing:.14em;line-height:1}
+.lmark small{display:block;font-family:var(--sans);font-size:7px;letter-spacing:.42em;margin-top:5px;padding-left:40px;opacity:.85}
+.lbar{position:absolute;left:31%;right:29%;bottom:12%}
+.lbar i{display:block;height:1px;background:rgba(216,216,216,.25);position:relative}
+.lbar i:after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--p,0%);background:var(--fog)}
+.lbar b{display:block;margin-top:8px;font-size:14px;font-weight:700;letter-spacing:.06em}
+
+/* ---------- fixed chrome: top-right nav, left wordmark, right mark ---------- */
+.nav{position:fixed;top:0;right:0;z-index:50;display:flex;align-items:center;gap:4px;padding:26px clamp(16px,5vw,56px) 0 0;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase}
+.nav a{padding:4px 8px;transition:opacity .3s}
+.nav a:hover{opacity:.6}
+.nav a.b{font-weight:700}
+.nav .lang{margin-left:22px}
+.nav .lang span{opacity:.5;padding:0 2px}
+.side-l,.side-r{position:fixed;top:50%;z-index:45;transform:translateY(-50%);pointer-events:none;mix-blend-mode:difference;color:#fff}
+.side-l{left:8px;font-family:var(--serif);font-size:13px;letter-spacing:.16em;pointer-events:auto}
+.side-r{right:14px;display:flex;align-items:flex-end;gap:5px;font-size:6.5px;letter-spacing:.38em;text-transform:uppercase}
+.side-r svg{width:22px;height:14px}
+.burger{display:none}
+@media (max-width:820px){
+  .nav a:not(.b),.nav .lang{display:none}
+  .burger{display:inline-block;margin-left:10px;padding:4px 8px}
+  .side-l,.side-r{display:none}
+}
+#menu{position:fixed;inset:0;z-index:60;background:var(--teal-d);display:flex;flex-direction:column;justify-content:center;padding:0 var(--gut);opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
+#menu.open{opacity:1;visibility:visible}
+#menu a{font-family:var(--serif);font-size:clamp(40px,10vw,64px);line-height:1.15}
+#menu .x{position:absolute;top:24px;right:20px;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase}
+
+/* ---------- COVER hero: house through the leaves (Freudenfels-style) ---------- */
+#cover{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--teal-x)}
+#cover .cv{position:absolute;inset:-2% 0 0 0;will-change:transform;transform:scale(1.08);transition:transform 2.6s var(--ease)}
+body.ready #cover .cv{transform:scale(1)}
+#cover .cv img,#cover .cv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#cover .cv video{opacity:0;transition:opacity 1.2s}
+#cover .cv video.ready{opacity:1}
+#cover .dim{position:absolute;inset:0;background:#132726;opacity:0;pointer-events:none}
+#cover .vig{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(19,39,38,.45) 0%,rgba(19,39,38,0) 18%,rgba(19,39,38,0) 82%,rgba(19,39,38,.35) 100%)}
+
+/* ---------- tour: scroll film (moved below the intro) ---------- */
+#tour{position:relative;height:500vh;background:var(--teal-x)}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.scene{position:absolute;inset:0;will-change:clip-path}
+.scene .media{position:absolute;inset:0;will-change:transform,filter}
+.scene img,.scene video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scene video{opacity:0;transition:opacity .8s}
+.scene video.ready{opacity:1}
+.scene .shade{position:absolute;inset:0;background:
+  radial-gradient(120% 90% at 50% 50%,rgba(19,39,38,0) 45%,rgba(19,39,38,.55) 100%),
+  linear-gradient(180deg,rgba(19,39,38,.35) 0%,rgba(19,39,38,0) 22%,rgba(19,39,38,0) 60%,rgba(19,39,38,.6) 100%)}
+.cap{position:absolute;left:calc(var(--gut) + 6vw);bottom:15vh;max-width:640px;pointer-events:none}
+.cap .lab{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.cap h2{font-family:var(--serif);font-weight:400;font-size:clamp(46px,6.6vw,86px);line-height:1}
+.cap .ln{display:block;overflow:hidden}
+.cap .ln>span{display:block;transform:translateY(110%);transition:transform 1.1s var(--ease)}
+.scene.on .cap .ln>span{transform:none}
+.scene.on .cap .ln:nth-child(2)>span{transition-delay:.07s}
+.hud{position:absolute;left:calc(var(--gut) + 6vw);right:clamp(16px,5vw,56px);bottom:5vh;display:flex;align-items:center;gap:18px;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.hud .track{flex:1;height:1px;background:rgba(216,216,216,.25);position:relative}
+.hud .track i{position:absolute;inset:0 auto 0 0;width:0;background:var(--fog)}
+.hud b{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ---------- shared editorial language ---------- */
+.h-xl{font-family:var(--serif);font-weight:400;font-size:clamp(52px,7.3vw,94px);line-height:1}
+.h-l{font-family:var(--serif);font-weight:400;font-size:clamp(46px,6.25vw,80px);line-height:1}
+.h-s{font-family:var(--serif);font-weight:400;font-size:clamp(25px,2.9vw,37px);line-height:1.1}
+.lab{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase}
+.copy{font-size:clamp(16px,1.4vw,18px);line-height:2;letter-spacing:.05em;color:var(--fog)}
+.copy+.copy{margin-top:1.2em}
+.facts{list-style:none;display:flex;flex-wrap:wrap;margin-top:12px}
+.facts li{font-size:13px;line-height:1.45;letter-spacing:.1em;padding:0 22px 22px;border-right:1px solid var(--fog);min-width:0;flex:0 1 auto}
+.facts li:first-child{padding-left:0}
+.facts li:last-child{border-right:0}
+.facts li a{display:inline-block;margin-top:24px;font-weight:700;font-size:12px}
+.acts{display:flex;align-items:center;gap:30px;margin-top:34px}
+.btn{display:inline-block;background:var(--teal-d);padding:11px 21px;font-size:13.5px;font-weight:700;letter-spacing:.04em;transition:background .3s,color .3s}
+.btn:hover{background:var(--fog);color:var(--teal)}
+.lnk{font-size:13.5px;font-weight:700;letter-spacing:.04em;background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;padding-bottom:2px;transition:background-size .5s var(--ease)}
+.lnk:hover{background-size:100% 1px}
+
+/* reveal (transform only, so nothing hides if scripts fail) */
+.js .rv{transform:translateY(46px);transition:transform 1.3s var(--ease)}
+.js .rv.in{transform:none}
+
+/* ---------- intro ---------- */
+#intro{padding:clamp(90px,14vh,140px) 0 0}
+#intro .col{margin-left:calc(var(--gut) + 11vw);max-width:620px;padding-right:var(--gut)}
+#intro .h-s{margin:38px 0 34px}
+#intro .facts{margin-top:44px}
+.map{position:relative;margin:clamp(30px,6vh,70px) 0 0;height:clamp(300px,52vw,700px)}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.map .pin{position:absolute;left:44%;top:51%;font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.map .pin:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--fog);box-shadow:0 0 0 0 rgba(216,216,216,.5);animation:ping 2.4s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 18px rgba(216,216,216,0)}100%{box-shadow:0 0 0 0 rgba(216,216,216,0)}}
+.map path.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 3.2s var(--ease)}
+.map.in path.draw{stroke-dashoffset:0}
+
+/* ---------- full-bleed atmosphere ---------- */
+.bleed{position:relative;height:56.25vw;max-height:100vh;min-height:320px;overflow:hidden;background:var(--teal-x)}
+.bleed img{position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover;will-change:transform}
+
+/* ---------- news ---------- */
+#news{padding:clamp(80px,13vh,130px) var(--gut) clamp(80px,12vh,120px)}
+#news .row{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:end}
+#news .card{border-top:1px solid rgba(216,216,216,.35);padding-top:22px;max-width:420px}
+#news .card h3{font-family:var(--serif);font-weight:400;font-size:19px;margin-bottom:6px}
+#news .card p{font-size:13px;letter-spacing:.06em;line-height:1.7}
+@media (max-width:820px){#news .row{grid-template-columns:1fr}}
+
+/* ---------- chapters (image one side, text the other) ---------- */
+.chap{display:grid;grid-template-columns:42.3% 1fr;gap:5vw;padding:clamp(70px,11vh,120px) var(--gut) clamp(80px,12vh,140px) var(--gut);align-items:start}
+.chap .pic{grid-row:1;margin-top:clamp(110px,22vh,230px);aspect-ratio:433/563;overflow:hidden;background:var(--teal-d)}
+.chap .pic img{width:100%;height:112%;object-fit:cover;will-change:transform}
+.chap .txt{grid-row:1;grid-column:2;max-width:520px}
+.chap .txt .h-s{margin:44px 0 36px}
+.chap .txt .facts{margin-top:40px}
+.chap.r{grid-template-columns:1fr 42.3%}
+.chap.r .pic{grid-column:2}
+.chap.r .txt{grid-column:1;margin-left:0}
+@media (max-width:820px){
+  .chap,.chap.r{grid-template-columns:1fr}
+  .chap .pic,.chap.r .pic{grid-column:1;grid-row:2;margin-top:40px}
+  .chap .txt,.chap.r .txt{grid-column:1;grid-row:1}
+}
+
+/* rooms list inside STAY */
+.rooms{grid-column:1/-1;grid-row:3;margin-top:clamp(60px,9vh,100px);display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));border-top:1px solid rgba(216,216,216,.25)}
+.rooms div{padding:18px 18px 22px 0;border-bottom:1px solid rgba(216,216,216,.12);transition:padding .5s var(--ease),background .4s}
+.rooms div:hover{padding-left:12px;background:rgba(25,50,50,.6)}
+.rooms b{display:block;font-family:var(--serif);font-weight:400;font-size:21px;margin-bottom:6px}
+.rooms span{font-size:12px;letter-spacing:.06em;line-height:1.6;color:var(--fog-2)}
+
+
+/* room photo strip on the home page */
+.rstrip{grid-column:1/-1;grid-row:3;margin:clamp(60px,9vh,100px) calc(-1*var(--gut)) 0;padding:0 var(--gut) 14px;display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:rgba(216,216,216,.3) transparent}
+.rc{flex:0 0 clamp(240px,26vw,380px);scroll-snap-align:start}
+.rc .ph{display:block;aspect-ratio:3/2;overflow:hidden;background:var(--teal-d)}
+.rc img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.rc:hover img{transform:scale(1.06)}
+.rc .nm{display:flex;justify-content:space-between;align-items:baseline;padding-top:12px;border-bottom:1px solid rgba(216,216,216,.2);padding-bottom:10px}
+.rc b{font-family:var(--serif);font-weight:400;font-size:21px}
+.rc i{font-style:normal;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog-2)}
+@media (max-width:820px){.rstrip{grid-row:3}}
+/* ---------- quote ---------- */
+#quote{padding:clamp(110px,18vh,200px) var(--gut);}
+#quote .col{margin-left:11vw;max-width:520px}
+#quote blockquote{font-family:var(--serif);font-size:clamp(26px,2.9vw,37px);line-height:1.1;margin-top:6px}
+
+/* ---------- light info band ---------- */
+#info{background:var(--fog);color:var(--ink);padding:clamp(80px,12vh,130px) var(--gut) clamp(60px,9vh,90px)}
+#info .grid{display:grid;grid-template-columns:1.1fr 1.3fr .6fr;gap:5vw}
+#info .lab{font-size:11px;margin-bottom:2px}
+#info h4{font-family:var(--serif);font-weight:400;font-size:clamp(18px,1.75vw,22px);line-height:1.1;margin-bottom:30px}
+#info p{font-size:12px;letter-spacing:.06em;line-height:1.75;margin-bottom:18px}
+#info p b{font-weight:700}
+#info ul{list-style:none;font-size:12px;letter-spacing:.08em;line-height:1.7;text-transform:uppercase}
+#info ul+ul{margin-top:20px}
+#info a:hover{text-decoration:underline}
+#info .mk{margin-top:26px;width:34px;opacity:.85}
+@media (max-width:820px){#info .grid{grid-template-columns:1fr}}
+
+/* ---------- footer cards ---------- */
+footer{padding:clamp(70px,11vh,110px) var(--gut) 40px}
+footer .two{display:flex;justify-content:space-between;gap:30px;border-bottom:1px solid rgba(216,216,216,.6);padding-bottom:22px}
+footer .two a{display:block;font-family:var(--serif);font-size:clamp(20px,2.1vw,27px);line-height:1.1}
+footer .two a:before{content:"";display:block;width:34px;height:1px;background:var(--fog);margin-bottom:26px;transition:width .6s var(--ease)}
+footer .two a:hover:before{width:90px}
+footer .two a:last-child{text-align:right}
+footer .two a:last-child:before{margin-left:auto}
+footer .fine{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:22px;font-size:11px;letter-spacing:.08em;color:var(--fog-2)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition-duration:.01ms!important}
+  .js .rv{transform:none}
+}
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div class="lmark">THE&nbsp;IVY<small>BALTIMORE</small></div>
+  <div class="lbar"><i id="lbar"></i><b><span id="pct">0</span>%</b></div>
+</div>
+
+<nav class="nav" aria-label="Main">
+  <a href="the-ivy-rooms-suites.html">Stay</a><a href="#dine">Restaurant</a><a href="#spa">Spa</a><a href="#events">Events</a>
+  <a class="b" href="#info">Reserve</a>
+  <button class="burger" id="bur">Menu</button>
+</nav>
+<div id="menu"><button class="x" id="mx">Close</button><a href="the-ivy-rooms-suites.html">Stay</a><a href="#dine">Restaurant</a><a href="#spa">Spa</a><a href="#events">Events</a><a href="#info">Reserve</a></div>
+
+<a class="side-l" href="#cover" aria-label="The Ivy, back to top">THE IVY</a>
+<div class="side-r" aria-hidden="true">
+  <svg viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width=".8"><path d="M1 13V5M5 13V3M9 13V1M13 13V3M17 13V5M21 13V8"/></svg><span>Baltimore</span>
+</div>
+
+<!-- ======================= COVER HERO ======================= -->
+<section id="cover" aria-label="The Ivy Hotel at dusk">
+  <div class="cv" id="cv">
+    <img src="https://d8j0ntlcm91z4.cloudfront.net/user_34kbE5otmhgzMAFMWoqSeXXEl8p/hf_20261017_140751_b6513220-23ab-4788-a991-9193c1916794.png" alt="The Ivy's red-brick mansion and courtyard at dusk, seen through the garden leaves">
+    <video id="cvv" muted playsinline loop autoplay preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_34kbE5otmhgzMAFMWoqSeXXEl8p/hf_20261017_140918_f3ed92fc-4238-4877-b636-cc63b84c7326.mp4"></video>
+  </div>
+  <div class="vig"></div>
+  <div class="dim" id="dim"></div>
+</section>
+
+<!-- ======================= INTRO ======================= -->
+<section id="intro">
+  <div class="col">
+    <h1 class="h-xl rv">The Ivy<br>Hotel.</h1>
+    <p class="h-s rv">Once a Mount Vernon mansion,<br>now a world-class hotel.</p>
+    <p class="copy rv">Gorgeous, romantic and welcoming, in the heart of Baltimore's most graceful neighborhood. Seventeen rooms and suites, charming public spaces, a small luxury spa and Magdalena, A Maryland Bistro. Take your coffee in the garden, choose a book from the library, try the piano or the billiards table. The property is yours.</p>
+    <ul class="facts rv">
+      <li>Seventeen<br>rooms and<br>suites.<br><a href="#stay">Learn more</a></li>
+      <li>Magdalena,<br>a Maryland<br>bistro.<br><a href="#dine">Learn more</a></li>
+      <li>A small<br>luxury<br>spa.<br><a href="#spa">Learn more</a></li>
+      <li>Weddings in<br>the ivy<br>courtyard.<br><a href="#events">Learn more</a></li>
+    </ul>
+  </div>
+  <div class="map" id="map" aria-hidden="true">
+    <svg viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid meet" fill="none" stroke="rgba(216,216,216,.45)" stroke-width="1">
+      <!-- stylized line drawing: Baltimore street grid, Jones Falls, Inner Harbor -->
+      <path class="draw" d="M70 470 C150 455 210 470 280 445 C330 428 360 448 420 440 C470 433 500 410 540 418 C585 427 600 455 650 452 C705 448 720 420 775 418 C820 416 860 438 930 430"/>
+      <path class="draw" d="M420 440 C430 470 470 488 520 486 C570 484 610 500 640 520 C660 534 700 538 740 530"/>
+      <path class="draw" d="M300 40 C310 120 350 160 360 230 C368 290 400 330 405 400 C408 425 415 432 420 440"/>
+      <path class="draw" d="M120 120 L880 150 M110 230 L900 250 M140 330 L860 345"/>
+      <path class="draw" d="M250 80 L230 450 M470 60 L462 420 M560 50 L560 420 M690 70 L700 430 M820 100 L835 420"/>
+      <path class="draw" d="M150 180 C260 172 330 190 440 186 C540 182 610 200 760 196" stroke-dasharray="3 6"/>
+      <circle cx="463" cy="230" r="34" stroke="rgba(216,216,216,.3)"/>
+    </svg>
+    <div class="pin">205 E Biddle St</div>
+  </div>
+</section>
+
+<!-- ======================= TOUR: scroll film ======================= -->
+<section id="tour" aria-label="Scroll to tour The Ivy">
+  <div class="stage">
+    <div class="scene" data-t="none">
+      <div class="media"><img src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/ivy-staircase.jpg" alt="The grand staircase"><video muted playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_34kbE5otmhgzMAFMWoqSeXXEl8p/hf_20261017_134002_91d25771-4234-48bf-b878-ea489caa49ce.mp4"></video></div>
+      <div class="shade"></div>
+      <div class="cap"><div class="lab">The grand staircase</div><h2><span class="ln"><span>Step</span></span><span class="ln"><span>inside.</span></span></h2></div>
+    </div>
+    <div class="scene" data-t="rise">
+      <div class="media"><img src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/IvyRoom14.jpg" alt="Canopied bed in Suite Fourteen"><video muted playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_34kbE5otmhgzMAFMWoqSeXXEl8p/hf_20261017_134002_9384f2e9-da18-4d1e-a6f1-1c87d0b162a7.mp4"></video></div>
+      <div class="shade"></div>
+      <div class="cap"><div class="lab">Suite Fourteen</div><h2><span class="ln"><span>Sleep under</span></span><span class="ln"><span>a canopy.</span></span></h2></div>
+    </div>
+    <div class="scene" data-t="diag">
+      <div class="media"><img src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/Suite-17-Bath.jpg" alt="Soaking tub in Suite Seventeen"><video muted playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_34kbE5otmhgzMAFMWoqSeXXEl8p/hf_20261017_134002_70a66884-1d28-4848-8caa-02c0d08a3019.mp4"></video></div>
+      <div class="shade"></div>
+      <div class="cap"><div class="lab">Suite Seventeen</div><h2><span class="ln"><span>Draw</span></span><span class="ln"><span>a bath.</span></span></h2></div>
+    </div>
+    <div class="scene" data-t="doors">
+      <div class="media"><img src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/Suite-18-scaled.jpg" alt="Suite Eighteen in the tower"><video muted playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_34kbE5otmhgzMAFMWoqSeXXEl8p/hf_20261017_134002_1e232ff5-8f02-4567-bb0c-4116c8551104.mp4"></video></div>
+      <div class="shade"></div>
+      <div class="cap"><div class="lab">Suite Eighteen, the tower</div><h2><span class="ln"><span>The house</span></span><span class="ln"><span>is yours.</span></span></h2></div>
+    </div>
+    <div class="hud"><b id="cn">01</b><span>/ 04</span><div class="track"><i id="bar"></i></div><span>Scroll</span></div>
+  </div>
+</section>
+
+<div class="bleed"><img data-par src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-1/room-suite-1-img-3.jpg" alt="Lounger and wine on the Suite One terrace, ivy on the brick" loading="lazy"></div>
+
+<!-- ======================= NEWS ======================= -->
+<section id="news">
+  <div class="row">
+    <h2 class="h-xl rv">News&shy;worthy</h2>
+    <div class="card rv">
+      <h3>Two Michelin Keys</h3>
+      <p>The Ivy is the only hotel in Maryland recognized with two Michelin Keys, and a member of Relais &amp; Châteaux.</p>
+    </div>
+  </div>
+</section>
+
+<div class="bleed"><img data-par src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/0007_IvyHotel_8_3_15-scaled.jpg" alt="The library at The Ivy, under a crystal chandelier" loading="lazy"></div>
+
+<!-- ======================= STAY ======================= -->
+<section class="chap" id="stay">
+  <div class="pic rv"><img data-par loading="lazy" src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/0009_IvyHotel_4_26_17.jpg" alt="Four-poster bed in Suite Two"></div>
+  <div class="txt">
+    <div class="lab rv">Rooms &amp; Suites</div>
+    <h2 class="h-l rv">Seventeen,<br>no two alike.</h2>
+    <p class="h-s rv">Canopies, fireplaces<br>and limestone baths.</p>
+    <p class="copy rv">Every room in the mansion was furnished on its own terms: octagonal sitting rooms over the courtyard, a corner turret with a dining table, vaulted beams under the eaves. Bathrooms lean on deep soaking tubs, walk-in showers and heated limestone floors.</p>
+    <ul class="facts rv"><li>Canopied<br>king beds.</li><li>Working<br>fireplaces.</li><li>Heated<br>limestone.</li></ul>
+    <div class="acts rv"><a class="btn" href="https://www.theivybaltimore.com/rooms-suites/" target="_blank" rel="noopener">Book a stay</a><a class="lnk" href="the-ivy-rooms-suites.html">All rooms &amp; suites</a></div>
+  </div>
+  <div class="rstrip rv" aria-label="All seventeen rooms and suites">
+    <a class="rc" href="the-ivy-rooms-suites.html#suite-one"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-1/room-suite-1-img-3.jpg" alt="Suite One at The Ivy"></span><span class="nm"><b>Suite One</b><i>Suite</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#suite-two"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-2/room-suite-2-img-1.jpg" alt="Suite Two at The Ivy"></span><span class="nm"><b>Suite Two</b><i>Suite</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#suite-three"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/room-3/room-suite-3-img-1.jpg" alt="Suite Three at The Ivy"></span><span class="nm"><b>Suite Three</b><i>Suite</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-four"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-4/room-suite-4-img-1.jpg" alt="Room Four at The Ivy"></span><span class="nm"><b>Room Four</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-five"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-5/room-suite-5-img-1.jpg" alt="Room Five at The Ivy"></span><span class="nm"><b>Room Five</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-six"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/the-ivy-room-six.jpg" alt="Room Six at The Ivy"></span><span class="nm"><b>Room Six</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#suite-seven"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-7/room-suite-7-img-4.jpg" alt="Suite Seven at The Ivy"></span><span class="nm"><b>Suite Seven</b><i>Suite</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#suite-nine"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-9/room-suite-9-img-1.jpg" alt="Suite Nine at The Ivy"></span><span class="nm"><b>Suite Nine</b><i>Suite</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-ten"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-10/room-suite-10-img-3.jpg" alt="Room Ten at The Ivy"></span><span class="nm"><b>Room Ten</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-eleven"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/room-11/room-suite-11-img-1.jpg" alt="Room Eleven at The Ivy"></span><span class="nm"><b>Room Eleven</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-twelve"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/room-12/room-suite-12-img-1.jpg" alt="Room Twelve at The Ivy"></span><span class="nm"><b>Room Twelve</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-thirteen"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-13/room-suite-13-img-1.jpg" alt="Room Thirteen at The Ivy"></span><span class="nm"><b>Room Thirteen</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#suite-fourteen"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-14/room-suite-14-img-4.jpg" alt="Suite Fourteen at The Ivy"></span><span class="nm"><b>Suite Fourteen</b><i>Suite</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-fifteen"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/room-15/room-suite-15-img-1.jpg" alt="Room Fifteen at The Ivy"></span><span class="nm"><b>Room Fifteen</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#room-sixteen"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/room-16/room-suite-16-img-1.jpg" alt="Room Sixteen at The Ivy"></span><span class="nm"><b>Room Sixteen</b><i>Room</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#suite-seventeen"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-17/room-suite-17-img-1.jpg" alt="Suite Seventeen at The Ivy"></span><span class="nm"><b>Suite Seventeen</b><i>Suite</i></span></a>
+    <a class="rc" href="the-ivy-rooms-suites.html#suite-eighteen"><span class="ph"><img loading="lazy" src="https://46086221.fs1.hubspotusercontent-na1.net/hubfs/46086221/raw_assets/public/the-ivy-hotel-2024/images/rooms/suite-18/room-suite-18-img-1.jpg" alt="Suite Eighteen at The Ivy"></span><span class="nm"><b>Suite Eighteen</b><i>Suite</i></span></a>
+  </div>
+</section>
+
+<div class="bleed"><img data-par loading="lazy" src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/CM3A1224-scaled.jpg" alt="Two glasses raised by the fire"></div>
+
+<!-- ======================= DINE ======================= -->
+<section class="chap r" id="dine">
+  <div class="txt">
+    <div class="lab rv">Magdalena, A Maryland Bistro</div>
+    <h2 class="h-l rv">To the<br>courtyard.</h2>
+    <p class="h-s rv">Maryland's larder,<br>a bistro's warmth.</p>
+    <p class="copy rv">Dine in the garden room, beneath the ivy in the courtyard, or down in the cellar for something more intimate. Magdalena is open to hotel guests and to the city alike.</p>
+    <ul class="facts rv"><li>Courtyard<br>dining.</li><li>Wine Spectator<br>Award of<br>Excellence.</li><li>OpenTable<br>Diners'<br>Choice.</li></ul>
+    <div class="acts rv"><a class="btn" href="https://www.theivybaltimore.com/dine/magdalena" target="_blank" rel="noopener">Book a table</a><a class="lnk" href="https://www.theivybaltimore.com/dine/" target="_blank" rel="noopener">Details</a></div>
+  </div>
+  <div class="pic rv"><img data-par loading="lazy" src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/CM3A5060-scaled.jpg" alt="Dinner at Magdalena"></div>
+</section>
+
+<div class="bleed"><img data-par loading="lazy" src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/Spa-View-scaled.jpg" alt="View from the spa window"></div>
+
+<!-- ======================= SPA ======================= -->
+<section class="chap" id="spa">
+  <div class="pic rv"><img data-par loading="lazy" src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/Spa-at-The-Ivy-scaled.jpg" alt="Seating area at the spa"></div>
+  <div class="txt">
+    <div class="lab rv">The Spa</div>
+    <h2 class="h-l rv">Slow<br>down.</h2>
+    <p class="h-s rv">Small by design,<br>so it feels like yours.</p>
+    <p class="copy rv">Massage and facials in quiet rooms lit by candle and window light, beside the tower and above the rooftops of Mount Vernon.</p>
+    <ul class="facts rv"><li>Massage.</li><li>Facials.</li><li>Mount Vernon<br>views.</li></ul>
+    <div class="acts rv"><a class="btn" href="https://www.theivybaltimore.com/spa" target="_blank" rel="noopener">Book a treatment</a><a class="lnk" href="https://www.theivybaltimore.com/spa" target="_blank" rel="noopener">Learn more</a></div>
+  </div>
+</section>
+
+<div class="bleed"><img data-par loading="lazy" src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/Ceremony1-2-scaled.jpg" alt="Courtyard set for a wedding ceremony"></div>
+
+<!-- ======================= EVENTS ======================= -->
+<section class="chap r" id="events">
+  <div class="txt">
+    <div class="lab rv">Weddings, Meetings &amp; Events</div>
+    <h2 class="h-l rv">Celebrate<br>beneath the ivy.</h2>
+    <p class="h-s rv">Intimate ceremonies,<br>long dinners.</p>
+    <p class="copy rv">Say your vows in the courtyard, dance under the string lights, then send your guests up the grand staircase to bed. For business, the mansion's salons make an off-site that feels nothing like a conference.</p>
+    <ul class="facts rv"><li>Courtyard<br>ceremonies.</li><li>Private<br>dining.</li><li>Rehearsal<br>dinners.</li></ul>
+    <div class="acts rv"><a class="btn" href="mailto:reservation@theivybaltimore.com?subject=Event%20inquiry">Inquiry</a><a class="lnk" href="https://www.theivybaltimore.com/meeting-events/" target="_blank" rel="noopener">Learn more</a></div>
+  </div>
+  <div class="pic rv"><img data-par loading="lazy" src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/Fall-ceremony-1-scaled.jpg" alt="Autumn ceremony in the courtyard"></div>
+</section>
+
+<!-- ======================= QUOTE ======================= -->
+<section id="quote">
+  <div class="col">
+    <div class="lab rv">The Ivy Hotel, Baltimore</div>
+    <blockquote class="rv">«There's nothing like The Ivy. Gorgeous, romantic and welcoming, in a historic Mount Vernon mansion.»</blockquote>
+  </div>
+</section>
+
+<div class="bleed"><img data-par loading="lazy" src="https://www.theivybaltimore.com/hubfs/raw_assets/public/the-ivy-hotel-2024/images/gallery/CM3A5173-scaled.jpg" alt="Breakfast in bed"></div>
+
+<!-- ======================= INFO (light band) ======================= -->
+<section id="info">
+  <div class="grid">
+    <div>
+      <div class="lab">Address</div>
+      <h4>The Ivy<br>Hotel</h4>
+      <p>205 E Biddle St<br>Baltimore, MD 21202</p>
+      <p><a href="tel:4105146500">(410) 514-6500</a><br><a href="mailto:reservation@theivybaltimore.com">reservation@<br>theivybaltimore.com</a></p>
+      <p>Directions:<br><b><a href="https://www.google.com/maps/dir//205+E+Biddle+St,+Baltimore,+MD+21202" target="_blank" rel="noopener">Google Maps</a></b></p>
+    </div>
+    <div>
+      <div class="lab">Info</div>
+      <h4>Reservations<br>Hotel and Magdalena</h4>
+      <p>Seventeen rooms and suites, each furnished individually. Our team will help you choose the room that suits your stay.</p>
+      <p>Magdalena, A Maryland Bistro, welcomes hotel guests and diners from across the city.</p>
+      <p>Book a stay:<br><b><a href="the-ivy-rooms-suites.html">Rooms &amp; Suites</a></b></p>
+      <p>Book a table:<br><b><a href="https://www.theivybaltimore.com/dine/magdalena" target="_blank" rel="noopener">Magdalena</a></b></p>
+    </div>
+    <div>
+      <ul><li><a href="https://www.theivybaltimore.com/offers/">Offers</a></li><li><a href="https://www.theivybaltimore.com/gift-certificates/">Gift cards</a></li><li><a href="https://www.theivybaltimore.com/history/">History</a></li></ul>
+      <ul><li><a href="https://www.instagram.com/theivyhotel">Instagram</a></li><li><a href="https://www.facebook.com/ivyhotelbaltimore">Facebook</a></li><li><a href="https://www.tripadvisor.com/Hotel_Review-g60811-d7171583-Reviews-The_Ivy_Hotel-Baltimore_Maryland.html">Tripadvisor</a></li></ul>
+      <ul><li><a href="https://www.theivybaltimore.com/faqs/">FAQ</a></li><li><a href="https://www.theivybaltimore.com/accessibility/">Accessibility</a></li><li><a href="https://www.theivybaltimore.com/careers/">Careers</a></li></ul>
+      <svg class="mk" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M17 32V14M17 14C17 8 12 5 7 6C7 11 11 15 17 14ZM17 18C17 12 22 9 27 10C27 15 23 19 17 18Z"/><circle cx="17" cy="5" r="3"/></svg>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="two"><a href="the-ivy-rooms-suites.html">Stay<br>at the mansion.</a><a href="#events">Celebrate<br>at The Ivy.</a></div>
+  <div class="fine"><span>Relais &amp; Châteaux · Michelin Two Keys</span><span>Spec redesign by Wade Ventures</span></div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+(function(){
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* preloader */
+  var L=document.getElementById('loader'),pct=document.getElementById('pct'),lb=document.getElementById('lbar'),shown=0,target=25,ok=false;
+  function fin(){ok=true}
+  addEventListener('load',fin); setTimeout(fin,3500);
+  (function t(){ if(!ok&&target<90)target+=.5; if(ok)target=100; shown+=(target-shown)*.1; var v=Math.round(shown); pct.textContent=v; lb.style.setProperty('--p',v+'%');
+    if(ok&&shown>99.5){pct.textContent='100';lb.style.setProperty('--p','100%');setTimeout(function(){L.classList.add('done');document.body.classList.add('ready')},350);return}
+    requestAnimationFrame(t)})();
+
+  /* menu */
+  var M=document.getElementById('menu');
+  document.getElementById('bur').onclick=function(){M.classList.add('open')};
+  document.getElementById('mx').onclick=function(){M.classList.remove('open')};
+  M.querySelectorAll('a').forEach(function(a){a.onclick=function(){M.classList.remove('open')}});
+
+  /* hero scroll film */
+  var hero=document.getElementById('tour'),S=[].slice.call(document.querySelectorAll('.scene')),N=S.length;
+  var V=S.map(function(s){return s.querySelector('video')}),P=S.map(function(s){return s.querySelector('img')});
+  var goal=V.map(function(){return 0}),cur=V.map(function(){return 0});
+  V.forEach(function(v){v.addEventListener('loadeddata',function(){v.classList.add('ready')});v.addEventListener('error',function(){v.style.display='none'});try{v.load()}catch(e){}});
+  addEventListener('touchstart',function o(){V.forEach(function(v){var p=v.play();if(p&&p.then)p.then(function(){v.pause()}).catch(function(){})});removeEventListener('touchstart',o)},{passive:true});
+  var bar=document.getElementById('bar'),cn=document.getElementById('cn'),TR=.3;
+  function cl(x,a,b){return Math.max(a,Math.min(b,x))}
+  function ez(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
+  function clip(t,r){var e=ez(r);
+    if(t==='iris')return 'circle('+(e*80)+'% at 50% 55%)';
+    if(t==='rise')return 'inset('+((1-e)*100)+'% 0 0 0)';
+    if(t==='diag'){var a=(1-e)*200;return 'polygon('+a+'% 0,200% 0,200% 100%,'+(a-100)+'% 100%)'}
+    if(t==='doors'){var h=(1-e)*50;return 'inset(0 '+h+'% 0 '+h+'%)'}
+    return 'none'}
+  function hero_(){
+    if(!hero) return;
+    var r=hero.getBoundingClientRect(),tot=hero.offsetHeight-innerHeight; if(r.bottom<0) return;
+    var p=cl(-r.top/tot,0,1),pos=p*N,idx=Math.min(N-1,Math.floor(pos));
+    bar.style.width=(p*100)+'%'; cn.textContent='0'+(idx+1);
+    S.forEach(function(s,i){
+      var c='none',vis=true;
+      if(i>0){var rr=cl((pos-(i-TR))/TR,0,1);vis=rr>0;c=rr>=1?'none':clip(s.dataset.t,rr)}
+      if(i<N-1&&pos>i+1.02)vis=false;
+      s.style.visibility=vis?'visible':'hidden';s.style.zIndex=i+1;s.style.clipPath=c;s.style.webkitClipPath=c;
+      var o=i<N-1?cl((pos-(i+1-TR))/TR,0,1):0, inn=i?ez(cl((pos-(i-TR))/TR,0,1)):1;
+      var m=s.querySelector('.media'); m.style.transform='scale('+((1+ez(o)*.12)*(1.15-.15*inn)).toFixed(4)+')'; m.style.filter=o>.02?'blur('+(o*6).toFixed(2)+'px)':'none';
+      var loc=cl((pos-(i-(i?TR:0)))/(1+(i?TR:0)),0,1);
+      if(V[i].duration)goal[i]=loc*(V[i].duration-.05);
+      if(!V[i].classList.contains('ready'))P[i].style.transform='scale('+(1.04+loc*.14)+')';
+      s.classList.toggle('on',i===idx);
+    });
+  }
+  function loop(){
+    V.forEach(function(v,i){if(!v.duration)return;var d=goal[i]-cur[i];if(Math.abs(d)>.004){cur[i]+=reduce?d:d*.16;if(!v.seeking&&Math.abs(v.currentTime-cur[i])>.03){try{v.currentTime=cur[i]}catch(e){}}}});
+    cover_(); hero_(); par_(); requestAnimationFrame(loop);
+  }
+
+  /* cover hero: photo drifts up at half speed and darkens as the teal page slides over it */
+  var cv=document.getElementById('cv'),dim=document.getElementById('dim'),cvv=document.getElementById('cvv');
+  if(cvv){cvv.addEventListener('loadeddata',function(){cvv.classList.add('ready')});cvv.addEventListener('error',function(){cvv.remove()});
+    if(reduce){cvv.removeAttribute('autoplay');cvv.pause()}}
+  function cover_(){var y=scrollY,h=innerHeight; if(y>h*1.1)return; var k=Math.min(y/h,1);
+    if(!reduce&&document.body.classList.contains('ready'))cv.style.transform='translateY('+(y*.45).toFixed(1)+'px) scale('+(1+k*.06).toFixed(4)+')';
+    dim.style.opacity=(k*.75).toFixed(3)}
+  setTimeout(function(){cv.style.transition='none'},3400);
+  /* parallax on bleeds and chapter photos */
+  var PX=[].slice.call(document.querySelectorAll('[data-par]'));
+  function par_(){ if(reduce)return; PX.forEach(function(im){var b=im.parentNode.getBoundingClientRect(); if(b.bottom<0||b.top>innerHeight)return; var k=(b.top+b.height/2-innerHeight/2)/innerHeight; im.style.transform='translateY('+(k*-9).toFixed(2)+'%) scale(1.04)'})}
+  requestAnimationFrame(loop);
+
+
+  /* reveals + map draw */
+  document.querySelectorAll('.map path.draw').forEach(function(p){var l=Math.ceil(p.getTotalLength());p.style.setProperty('--len',l)});
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -12% 0px'});
+  document.querySelectorAll('.rv,#map').forEach(function(el){io.observe(el)});
+})();
+</script>
+</body>
+</html>
